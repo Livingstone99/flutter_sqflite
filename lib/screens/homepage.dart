@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/dbInstance.dart';
-import 'package:flutter_application_1/readDb.dart';
-import 'package:flutter_application_1/userModel.dart';
-import 'package:flutter_application_1/userProvider.dart';
+import 'package:flutter_application_1/database/dbInstance.dart';
+import 'package:flutter_application_1/modelView/controller.dart';
+import 'package:flutter_application_1/screens/readDb.dart';
+import 'package:flutter_application_1/models/userModel.dart';
+import 'package:flutter_application_1/providers/userProvider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/Provider.dart';
 
@@ -108,18 +109,22 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isloading = true;
     });
-    Uri url =
-        Uri.parse("https://secured-taxi.herokuapp.com/driver/onebycode/aaaa");
-    var response = await http.get(url);
-    print(response.body);
-    final userProv = Provider.of<UserProvider>(context, listen: false);
-    var info = json.decode(response.body);
-    UserModel userMod = UserModel.fromJson({...info["driver"], "logged": true});
-    userProv.setUser = userMod;
-    setState(() {
-      _fetch = true;
-      _isloading = false;
-    });
+    var data = await UserRequest.getUser();
+    print(data);
+    if (!data["error"]) {
+      final userProv = Provider.of<UserProvider>(context, listen: false);
+      UserModel userMod =
+          UserModel.fromJson({...data["data"]["driver"], "logged": true});
+      userProv.setUser = userMod;
+      setState(() {
+        _fetch = true;
+        _isloading = false;
+      });
+    } else {
+      setState(() {
+        _isloading = false;
+      });
+    }
   }
 
   Future<void> clearDb() async {

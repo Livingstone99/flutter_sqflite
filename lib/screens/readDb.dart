@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/dbInstance.dart';
-import 'package:flutter_application_1/userModel.dart';
-import 'package:flutter_application_1/userProvider.dart';
+import 'package:flutter_application_1/database/dbInstance.dart';
+import 'package:flutter_application_1/models/userModel.dart';
+import 'package:flutter_application_1/providers/userProvider.dart';
 import 'package:provider/provider.dart';
 
 class ReadDb extends StatefulWidget {
